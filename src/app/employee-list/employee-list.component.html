@@ -1,0 +1,35 @@
+<div class="employee-container">
+    <button class="btn btn-primary" routerLink="/employee/new">Create New Employee</button>
+    <table class="employee-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Salary</th>
+          <th>Age</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="employees && employees.length > 0">
+          <tr *ngFor="let employee of employees | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
+            <td>{{ employee.id }}</td>
+            <td>{{ employee.employee_name }}</td>
+            <td>{{ employee.employee_salary }}</td>
+            <td>{{ employee.employee_age }}</td>
+            <td>
+              <button class="btn btn-view" (click)="viewEmployee(employee.id)">View</button>
+              <button class="btn btn-edit" (click)="editEmployee(employee.id)">Edit</button>
+              <button class="btn btn-delete" (click)="deleteEmployee(employee.id)">Delete</button>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="!(employees && employees.length > 0)">
+          <tr>
+            <td colspan="5">No employees found.</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)="paginate($event)"></pagination-controls>
+</div>
