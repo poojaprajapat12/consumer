@@ -12,13 +12,20 @@ import { CommonModule } from '@angular/common';
 })
 export class EmployeeDetailsComponent implements OnInit {
   employee: any;
+  errorMessage: string = '';
 
   constructor(private route: ActivatedRoute, private employeeService: EmployeeService) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
-    this.employeeService.getEmployee(id).subscribe(data => {
-      this.employee = data;
+    this.employeeService.getEmployee(id).subscribe({
+      next: (data) => {
+        this.employee = data;
+      },
+      error: (error) => {
+        this.errorMessage = 'Error fetching employee details';
+        console.error('Error fetching employee details:', error);
+      }
     });
   }
 }

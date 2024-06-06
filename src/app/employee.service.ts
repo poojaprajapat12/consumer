@@ -11,15 +11,22 @@ export class EmployeeService {
 
   constructor(private http: HttpClient) { }
 
-  getEmployees(): Observable<any> {
+  getEmployees(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl).pipe(
-      catchError(this.handleError)
+      catchError(error => {
+        console.error('Error fetching employees:', error);
+        return throwError(() => error);
+      })
     );
   }
 
+
   getEmployee(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError)
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error fetching employee:', error);
+        return throwError(() => new Error('Error fetching employee'));
+      })
     );
   }
 
