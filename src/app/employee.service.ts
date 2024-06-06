@@ -7,20 +7,24 @@ import { Observable, catchError, mergeMap, retryWhen, throwError, timer } from '
 })
 export class EmployeeService {
 
-  private apiUrl = 'https://dummy.restapiexample.com/api/v1';
+  private apiUrl = 'http://localhost:3000/posts';
 
   constructor(private http: HttpClient) { }
 
   getEmployees(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/employees`);
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
   }
 
   getEmployee(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/employee/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
   }
 
   createEmployee(employee: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/create`, employee).pipe(
+    return this.http.post<any>(this.apiUrl, employee).pipe(
       retryWhen(errors =>
         errors.pipe(
           mergeMap((error: HttpErrorResponse, i) => {
@@ -28,7 +32,7 @@ export class EmployeeService {
               const delayMs = Math.pow(2, i) * 1000; // Exponential backoff
               return timer(delayMs);
             }
-            return throwError(error);
+            return throwError(() => error);
           })
         )
       ),
@@ -38,16 +42,25 @@ export class EmployeeService {
         } else {
           console.error('Error creating employee:', error);
         }
-        throw error;
+        return throwError(() => error);
       })
     );
   }
 
   updateEmployee(id: number, employee: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/update/${id}`, employee);
+    return this.http.put<any>(`${this.apiUrl}/${id}`, employee).pipe(
+      catchError(this.handleError)
+    );
   }
 
   deleteEmployee(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/delete/${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    console.error('An error occurred:', error);
+    return throwError(() => new Error('Something went wrong; please try again later.'));
   }
 }

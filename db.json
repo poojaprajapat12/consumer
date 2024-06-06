@@ -1,0 +1,22 @@
+{
+  "posts": [
+    {
+      "id": "2",
+      "employee_name": "another title",
+      "employee_salary": 200,
+      "employee_age": 23
+    },
+    {
+      "id": "6647",
+      "employee_name": "another title",
+      "employee_salary": 200,
+      "employee_age": 23
+    },
+    {
+      "id": "d9c7",
+      "employee_name": "another title2",
+      "employee_salary": 210,
+      "employee_age": 23
+    }
+  ]
+}
